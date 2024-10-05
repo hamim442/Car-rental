@@ -1,0 +1,44 @@
+version: '3.9'  # This should be fine for most use cases. You can also try using '3.8' or '2.4' if you still encounter issues.
+
+volumes:
+  database_volume:
+    name: database_volume
+
+services:
+  db:
+    image: postgres:14.2-bullseye
+    volumes:
+      - database_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "15432:5432"
+
+  api:
+    build:
+      context: ./api  # Ensure the 'api' directory exists
+      dockerfile: Dockerfile.dev  # Ensure Dockerfile.dev exists in the 'api' directory
+    environment:
+      CORS_HOST: http://localhost:5173
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+      SIGNING_KEY: ${SIGNING_KEY}
+      WAIT_HOSTS: db:5432
+    ports:
+      - "8000:8000"
+    user: "1000:1000"
+    volumes:
+      - ./api:/app
+    depends_on:
+      - db
+
+  ghi:
+    build:
+      context: ./ghi  # Ensure the 'ghi' directory exists
+      dockerfile: Dockerfile  # Ensure Dockerfile exists in the 'ghi' directory
+    ports:
+      - "5173:80"  # Mapping Nginx container's port 80 to host port 5173
+    environment:
+      VITE_API_HOST: http://localhost:8000
+      BASE_URL: http://localhost:5173
