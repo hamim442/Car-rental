@@ -26,4 +26,5 @@ COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 
 # Command to run Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--forwarded-allow-ips", "*"]
+

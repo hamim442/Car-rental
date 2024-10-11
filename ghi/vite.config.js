@@ -1,14 +1,14 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: 'dist', // This should match the output path in your Dockerfile
-  },
-  server: {
-    port: 5173,
-    open: true,
-  },
-});
+    plugins: [react()],
+    server: {
+        host: true,
+        strictPort: true,
+        watch: {
+            usePolling: true,
+        },
+    },
+})
