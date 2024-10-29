@@ -60,3 +60,43 @@ async def signup(
         secure=secure,
     )
     return user_out
+
+@router.post("/signin")
+async def signin(
+    user_request: SigninRequest,
+    request: Request,
+    response: Response,
+    queries: UserQueries =  Depends(),
+) -> UserResponse:
+    
+    user = queries.get_by_username(user_request.username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+    
+    if not verify_password(user_request.password, user.password):
+        raise HTTPException(
+            status_code-status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+    token = generate_jwt
+
+    secure= True if request.headers.get("origin") == "localhost" else False
+
+    response.set_cookie(
+        key="fast_api_token",
+        value=token,
+        httponly=True,
+        semesite="lax",
+        secure=secure
+    )
+
+    return UserResponse(
+        id=user.id,
+        username=user.username,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name
+    )
