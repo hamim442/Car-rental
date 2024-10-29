@@ -100,3 +100,31 @@ async def signin(
         first_name=user.first_name,
         last_name=user.last_name
     )
+
+@router.get("/authenticate")
+async def authenticate(
+    jwt_user: JWTUserData | None = Depends(
+        try_get_jwt_user_data
+    ),
+    queries: UserQueries = Depends(),
+) -> UserResponse:
+    
+    if not jwt_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Not logged in"
+        )
+    user = queries.get_by_id(jwt_user.id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Not logged in"
+        )
+
+    # Convert the UserWithPW to a UserOut
+    return UserResponse(
+        id=user.id,
+        username=user.username,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        profile_image=user.profile_image,
+    )
