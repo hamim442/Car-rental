@@ -128,3 +128,26 @@ async def authenticate(
         last_name=user.last_name,
         profile_image=user.profile_image,
     )
+
+@router.delete("/signout")
+async def signout(
+    request: Request,
+    response: Response,
+):
+    secure = True if request.headers.get("origin") == "localhost" else False
+
+    response.delete_cookie(
+        key="fast_api_token", httponly=True, samesite="lax", secure=secure
+    )
+    return
+
+@router.get("/check-username/{username}")
+async def check_username(username: str, queries: UserQueries = Depends()):
+
+    try:
+        user= queries.get_by_username(username)
+        return {"exists": user is not None}
+    except UserDatabaseException as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
