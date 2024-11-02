@@ -7,3 +7,9 @@ class DatabaseURLException(Exception):
 
 class UserDatabaseException(Exception):
     pass
+
+class EmployeeDataBaseError(Exception):
+    pass
+
+class EmployeeCreationError(Exception):
+    pass
