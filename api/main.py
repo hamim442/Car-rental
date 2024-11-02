@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers.manufactures_router import router as manufactures_router
+from routers import manufactures_router, auth_router
 
 import os
 
@@ -24,4 +24,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(manufactures_router)
+app.include_router(manufactures_router.router)
+app.include_router(auth_router.router)

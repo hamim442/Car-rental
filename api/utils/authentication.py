@@ -1,3 +1,7 @@
+"""
+Helper functions for implementing authentication
+"""
+
 import os
 import bcrypt
 from calendar import timegm
@@ -10,11 +14,13 @@ from models.jwt import JWTPayload, JWTUserData
 
 from queries.user_queries import UserWithPw
 
+# If you ever need to change the hashing algorith, you can change it here
 ALGORITHM = ALGORITHMS.HS256
 
-SIGNING_KEY = os.envirom.get("SIGNING_KEY")
+# We pull this from the environment
+SIGNING_KEY = os.environ.get("SIGNING_KEY")
 if not SIGNING_KEY:
-    raise ValueError("SIGNING_KEY enviroment variable not set")
+    raise ValueError("SIGNING_KEY environment variable not set")
 
 
 async def decode_jwt(token: str) -> Optional[JWTPayload]:
@@ -26,8 +32,9 @@ async def decode_jwt(token: str) -> Optional[JWTPayload]:
         return JWTPayload(**payload)
     except (JWTError, AttributeError) as e:
         print(e)
-        return None
-    
+    return None
+
+
 async def try_get_jwt_user_data(
     fast_api_token: Annotated[str | None, Cookie()] = None,
 ) -> Optional[JWTUserData]:
