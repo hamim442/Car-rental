@@ -4,3 +4,6 @@ class ManufactureDatabaseError(Exception):
 
 class DatabaseURLException(Exception):
     pass
+
+class UserDatabaseException(Exception):
+    pass
