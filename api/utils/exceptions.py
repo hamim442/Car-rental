@@ -13,3 +13,6 @@ class EmployeeDataBaseError(Exception):
 
 class EmployeeCreationError(Exception):
     pass
+
+class VehicleDataBaseError(Exception):
+    pass

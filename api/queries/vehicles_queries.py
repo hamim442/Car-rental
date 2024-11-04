@@ -3,10 +3,9 @@ import psycopg
 from psycopg.rows import class_row
 from psycopg_pool import ConnectionPool
 from psycopg.errors import UniqueViolation
-from models.manufactures import Manufacture
+from models.vehicles import Vehicle
 from utils.exceptions import (
-    ManufactureDatabaseError,
-    DatabaseURLException,
+    VehicleDataBaseError, DatabaseURLException
 )
 
 
@@ -18,22 +17,19 @@ if database_url is None:
 
 pool = ConnectionPool(database_url)
 
-class ManufactureQueries:
+class VehicleQueries:
 
-    def get_all_manufactures(self) -> list[Manufacture]:
+    def get_all_vehicles(self) -> list[Vehicle]:
         try:
             with pool.connection() as conn:
-                with conn.cursor(row_factory=class_row(Manufacture)) as cur:
+                with conn.cursor(row_factory=class_row(Vehicle)) as cur:
                     result = cur.execute(
                         """--sql
-                        SELECT * FROM manufactures;
+                        SELECT * FROM vehicles;
                         """
                     )
-                    manufactures = result.fetchall()
-                    return manufactures
+                    vehicles = result.fetchall()
+                    return vehicles
         except psycopg.Error as e:
-            print(f"Error retrieving all manufactures: {e}")
-            raise ManufactureDatabaseError("Error retrieving all manufactures")
-
-
-    
+            print(f"Error retriving all vehicles: {e}")
+            raise VehicleDataBaseError("Error retriving all vehicles")
