@@ -6,3 +6,9 @@ class Vehicle(BaseModel):
     model: str
     horsepower: int
     price: int
+
+class VehicleRequest(BaseModel):
+    brand: str
+    model: str
+    horsepower: int
+    price: int

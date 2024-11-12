@@ -16,3 +16,6 @@ class EmployeeCreationError(Exception):
 
 class VehicleDataBaseError(Exception):
     pass
+
+class VehicleCreationError(Exception):
+    pass
