@@ -60,8 +60,8 @@ class VehicleQueries:
                             "brand": vehicle.brand,
                             "model": vehicle.model,
                             "horsepower": vehicle.horsepower,
-                            "price": vehicle.price,  # Fixed the typo here
-                            "user_id": user_id       # Added user_id here
+                            "price": vehicle.price, 
+                            "user_id": user_id      
                         }
                     )
                     new_vehicle = result.fetchone()
@@ -71,3 +71,21 @@ class VehicleQueries:
         except psycopg.Error as e:
             print(f"Error creating vehicle for user {user_id}: {e}.")
             raise VehicleDataBaseError("Error creating vehicle.")
+        
+    def delete_vehicle(self, id: int, user_id: int) -> bool:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """--sql
+                        DELETE FROM vehicles
+                        WHERE id = %s AND user_id = %s;
+                        """,
+                        (id, user_id)
+                    )
+                    return cur.rowcount > 0
+        except psycopg.Error as e:
+            print(f"Error deleting vehicles wiht id {id} from user {user_id}: {e}.")
+            raise VehicleDataBaseError(
+                f"Error deleteting trip with id {id} for user {user_id}."
+            )

@@ -7,7 +7,7 @@ steps = [
                 brand VARCHAR(100) NOT NULL,
                 model VARCHAR(100) NOT NULL,
                 horsepower INTEGER NOT NULL,
-                price INTEGER NOT NULL,
+                price DECIMAL(10, 2) NOT NULL,
                 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
             );
         """,
