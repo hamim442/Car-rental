@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from queries.vehicles_queries import VehicleQueries, VehicleDataBaseError, VehicleCreationError
+from queries.vehicles_queries import VehicleQueries, VehicleDataBaseError, VehicleCreationError,VehicleDoesNotExist
 from models.vehicles import Vehicle, VehicleRequest
 from utils.authentication import try_get_jwt_user_data
 from models.jwt import JWTUserData
@@ -37,3 +37,21 @@ def create_vehicle(
         raise HTTPException(status_code=400, detail=f"Vehicle creation error: {e}")
     except VehicleDataBaseError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+
+@router.delete("/{id}") 
+def delete_vehicle(
+    id: int,
+    user: JWTUserData = Depends(try_get_jwt_user_data),
+    queries: VehicleQueries = Depends(),
+) -> dict:
+    print(f"user: {user}")
+    try:
+        success = queries.delete_vehicle(id, user.id)
+        if not success:
+            raise VehicleDoesNotExist(f"Vehicle with id {id} does not exist")
+        return {"status": "Vehicle deleted successfully."}
+    except VehicleDoesNotExist:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    except VehicleDataBaseError:
+        raise HTTPException(status_code=500, detail="Error deleting vehicle.")

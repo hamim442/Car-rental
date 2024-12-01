@@ -19,3 +19,6 @@ class VehicleDataBaseError(Exception):
 
 class VehicleCreationError(Exception):
     pass
+
+class VehicleDoesNotExist(Exception):
+    pass

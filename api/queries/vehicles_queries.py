@@ -5,7 +5,7 @@ from psycopg_pool import ConnectionPool
 from psycopg.errors import UniqueViolation
 from models.vehicles import Vehicle, VehicleRequest
 from utils.exceptions import (
-    VehicleDataBaseError, DatabaseURLException, VehicleCreationError
+    VehicleDataBaseError, DatabaseURLException, VehicleCreationError, VehicleDoesNotExist
 )
 
 
@@ -81,7 +81,7 @@ class VehicleQueries:
                         DELETE FROM vehicles
                         WHERE id = %s AND user_id = %s;
                         """,
-                        (id, user_id)
+                        (id, user_id),
                     )
                     return cur.rowcount > 0
         except psycopg.Error as e:
