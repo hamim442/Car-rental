@@ -89,3 +89,30 @@ class VehicleQueries:
             raise VehicleDataBaseError(
                 f"Error deleteting trip with id {id} for user {user_id}."
             )
+        
+    def get_vehicle(self, id: int, user_id: int) -> Vehicle:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor(row_factory=class_row(Vehicle)) as cur:
+                    result = cur.execute(
+                        """--sql
+                        SELECT *
+                        FROM vehicles
+                        WHERE id = %s AND user_id = %s;
+                        """,
+                        (id, user_id),
+                    )
+                    vehicle = result.fetchone()
+                    if vehicle is None:
+                        raise VehicleDoesNotExist(
+                            f"No vehicles with id {id} for user {user_id}"
+                        )
+                    return vehicle 
+        except psycopg.Error as e:
+            print(
+                f"Error retriving trip with id {id} for user {user_id}: {e}"
+            )
+            raise VehicleDoesNotExist(
+                f"Error retrieving vehicle with id {id} for user {user_id}"
+            )
+                

@@ -8,6 +8,22 @@ from models.jwt import JWTUserData
 
 router = APIRouter(tags=['Vehicle'], prefix="/api/vehicles")
 
+
+@router.get("/{id}")
+async def get_specific_car(
+    id: int,
+    user: JWTUserData = Depends(try_get_jwt_user_data),
+    queries: VehicleQueries = Depends(),
+) -> Vehicle:
+    try:
+        vehicle = queries.get_vehicle(id, user.id)
+        return vehicle
+    except VehicleDataBaseError:
+        raise HTTPException( 
+            status_code=500, detail="Failed to retrive trips"
+        )
+
+
 @router.get("/")
 def get_all_vehicles(
     queries: VehicleQueries= Depends()
