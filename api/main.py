@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import manufactures_router, auth_router, vehicle_router
+from routers import manufactures_router, auth_router, vehicle_router, schedule_router
 
 import os
 
@@ -27,3 +27,4 @@ app.add_middleware(
 app.include_router(manufactures_router.router)
 app.include_router(auth_router.router)
 app.include_router(vehicle_router.router)
+app.include_router(schedule_router.router)

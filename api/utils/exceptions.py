@@ -22,3 +22,12 @@ class VehicleCreationError(Exception):
 
 class VehicleDoesNotExist(Exception):
     pass
+
+class ScheduleDatabaseError(Exception):
+    pass
+
+class ScheduleDoesNotExist(Exception):
+    pass
+
+class ScheduleCreationError(Exception):
+    pass
